@@ -1,22 +1,21 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import Home from './routes/Home';
-import About from './routes/About';
-import NotFound from './routes/NotFound';
+import Home from './pages/Home'
+import Header from './pages/layout/Header'
+import Footer from './pages/layout/Footer'
+import Detail from './pages/Detail'
+import Search from './pages/Search'
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <BrowserRouter>
+      <Header />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="*" element={<NotFound />} />
+        <Route path="/detail/:id" element={<Detail />} />
+        <Route path="/search/:keyword" element={<Search />} />
       </Routes>
+      <Footer />
     </BrowserRouter>
   )
 }
