@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { dataProduct } from "../api/api";
+import { Link } from "react-router-dom";
 
 export default function Home() {
   const [products, setProducts] = useState([]);
@@ -35,13 +36,13 @@ export default function Home() {
 
   return (
     <div className="max-w-[1280px] mx-auto py-8">
-      <h1 className="text-[48px] font-bold mb-3">Combo</h1>
+      <h1 className="text-[48px] font-bold mb-3">Products</h1>
 
       <div className="grid grid-cols-4 gap-x-5 gap-y-20">
         {currentProducts.map((item) => (
           <div
             key={item.id}
-            className="h-[305px] bg-white rounded-[20px] shadow-xl flex flex-col overflow-hidden duration-300 ease-in-out group hover:h-[350px]"
+            className="h-[310px] bg-white rounded-[20px] shadow-xl flex flex-col overflow-hidden duration-300 ease-in-out group hover:h-[355px]"
           >
             <div className="relative">
               <img
@@ -52,7 +53,7 @@ export default function Home() {
             </div>
 
             <div className="flex flex-col p-5">
-              <div className="font-bold text-[20px] mb-2">
+              <div className="line-clamp-1 font-bold text-[20px] mb-2">
                 {item.name}
               </div>
 
@@ -66,9 +67,9 @@ export default function Home() {
                 <div className="font-bold text-[20px] mt-auto">
                   ${item.price}
                 </div>
-                <button className="text-white bg-[#1a1337] rounded-[5px] px-2">
+                <Link to={`/product/${item.id}`} className="text-white bg-[#1a1337] rounded-[5px] px-3 py-1">
                   Xem chi tiết
-                </button>
+                </Link>
               </div>
             </div>
           </div>

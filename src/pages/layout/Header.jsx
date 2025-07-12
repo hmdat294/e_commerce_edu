@@ -53,14 +53,14 @@ export default function Header() {
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder="Search..."
-                                className="w-[340px] px-6 py-3 bg-white/10 text-gray-200 placeholder-gray-400 focus:outline-none border-none rounded-l-xl text-base"
+                                className="w-[340px] px-6 py-2 bg-white/10 text-gray-200 placeholder-gray-400 focus:outline-none border-none rounded-l-xl text-base"
                                 onFocus={() => setIsFocused(true)}
                                 onBlur={() => setTimeout(() => setIsFocused(false), 100)}
                                 autoComplete="off"
                             />
                             <button
                                 type="submit"
-                                className="h-full px-6 py-3 bg-gradient-to-r from-[#7f5fff] to-[#5f3fff] rounded-r-xl flex items-center justify-center transition-colors border-none outline-none"
+                                className="h-full px-6 py-2 bg-gradient-to-r from-[#7f5fff] to-[#5f3fff] cursor-pointer rounded-r-xl flex items-center justify-center"
                                 style={{ border: 'none' }}
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="white" className="w-5 h-5">

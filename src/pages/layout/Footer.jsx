@@ -37,7 +37,7 @@ export default function Footer() {
                 className="flex-1 px-6 py-3 rounded-l-full bg-white/10 text-white placeholder-gray-300 focus:outline-none border-none text-base"
               />
               <button
-                type="submit"
+                type="button"
                 className="px-8 py-3 rounded-r-full bg-gradient-to-r from-[#7f5fff] to-[#5f3fff] text-white font-semibold flex items-center gap-2 hover:opacity-90 transition-all"
               >
                 Send
