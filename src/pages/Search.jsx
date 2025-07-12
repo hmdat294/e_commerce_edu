@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { dataProduct } from "../api/api";
 import { Link, useParams } from "react-router-dom";
+import Product from "./layout/Product";
+import { ProductCardSkeleton } from "../components/LoadingSkeleton";
 
 export default function Search() {
     const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [priceFilter, setPriceFilter] = useState("all");
     const [currentPage, setCurrentPage] = useState(1);
     const [productsPerPage] = useState(6);
@@ -11,10 +14,13 @@ export default function Search() {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
+                setLoading(true);
                 const response = await dataProduct();
                 setProducts(response.data);
             } catch (error) {
                 console.error('Error fetching products:', error);
+            } finally {
+                setLoading(false);
             }
         };
         fetchProducts();
@@ -63,7 +69,7 @@ export default function Search() {
         <div className="max-w-[1280px] mx-auto py-15">
             <div className="flex gap-10">
                 <div className="mb-8 w-[20%]">
-                    <h2 className="text-[24px] font-semibold mb-4">Sort by price</h2>
+                    <h2 className="text-[24px] font-semibold mb-4">Sắp xếp theo giá</h2>
                     <ul className="border border-gray-200 shadow-sm rounded-lg overflow-hidden">
                         <li>
                             <label className={`px-4 py-2 border-b border-gray-200 flex items-center gap-2 cursor-pointer ${priceFilter === "all" ? "bg-gray-100" : ""}`}>
@@ -88,7 +94,7 @@ export default function Search() {
                                     onChange={() => { setPriceFilter("under-100"); setCurrentPage(1); }}
                                     className="accent-gray-500 w-4 h-4"
                                 />
-                                <span>Dưới $100</span>
+                                <span>Dưới 100$</span>
                             </label>
                         </li>
                         <li>
@@ -101,7 +107,7 @@ export default function Search() {
                                     onChange={() => { setPriceFilter("100-500"); setCurrentPage(1); }}
                                     className="accent-gray-500 w-4 h-4"
                                 />
-                                <span>$100 - $500</span>
+                                <span>100$ - 500$</span>
                             </label>
                         </li>
                         <li>
@@ -114,7 +120,7 @@ export default function Search() {
                                     onChange={() => { setPriceFilter("500-1000"); setCurrentPage(1); }}
                                     className="accent-gray-500 w-4 h-4"
                                 />
-                                <span>$500 - $1000</span>
+                                <span>500$ - 1000$</span>
                             </label>
                         </li>
                         <li>
@@ -127,50 +133,26 @@ export default function Search() {
                                     onChange={() => { setPriceFilter("over-1000"); setCurrentPage(1); }}
                                     className="accent-gray-500 w-4 h-4"
                                 />
-                                <span>Trên $1000</span>
+                                <span>Trên 1000$</span>
                             </label>
                         </li>
                     </ul>
                 </div>
 
                 <div className="w-[80%]">
-                    <div className="grid grid-cols-3 gap-x-5 gap-y-20">
-                        {currentProducts.map((item) => (
-                            <div
-                                key={item.id}
-                                className="h-[310px] bg-white rounded-[20px] shadow-xl flex flex-col overflow-hidden duration-300 ease-in-out group hover:h-[355px]"
-                            >
-                                <div className="relative">
-                                    <img
-                                        src={item.image}
-                                        alt={item.name}
-                                        className="w-full h-[160px] object-cover"
-                                    />
-                                </div>
-
-                                <div className="flex flex-col p-5">
-                                    <div className="line-clamp-1 font-bold text-[20px] mb-2">
-                                        {item.name}
-                                    </div>
-
-                                    <div className="text-[14px] mb-4">
-                                        <div className="line-clamp-1 duration-300 ease-in-out h-[25px] group-hover:line-clamp-none group-hover:h-[70px]">
-                                            ⏺ {item.description}
-                                        </div>
-                                    </div>
-
-                                    <div className="flex justify-between items-center">
-                                        <div className="font-bold text-[20px] mt-auto">
-                                            ${item.price}
-                                        </div>
-                                        <Link to={`/product/${item.id}`} className="text-white bg-[#1a1337] rounded-[5px] px-3 py-1">
-                                            Xem chi tiết
-                                        </Link>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                    {loading ? (
+                        <div className="grid grid-cols-3 gap-x-5 gap-y-20">
+                            {[...Array(6)].map((_, index) => (
+                                <ProductCardSkeleton key={index} />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-3 gap-x-5 gap-y-20">
+                            {currentProducts.map((item) => (
+                                <Product key={item.id} data={item} />
+                            ))}
+                        </div>
+                    )}
 
                     {filteredSearch.length === 0 && (
                         <div className="text-center py-12">
@@ -179,7 +161,7 @@ export default function Search() {
                             </p>
                             {filteredSearch.length === 0 && priceFilter !== "all" && (<button
                                 onClick={() => setPriceFilter("all")}
-                                className="mt-4 px-6 py-2 rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-100"
+                                className="mt-4 bg-[#1a1337] text-white px-6 py-2 rounded-lg hover:bg-[#1a1337]/80 transition-colors cursor-pointer"
                             >
                                 Xóa bộ lọc
                             </button>)}

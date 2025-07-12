@@ -1,19 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { dataProduct } from "../api/api";
 import { Link } from "react-router-dom";
+import Product from "./layout/Product";
+import { ProductCardSkeleton } from "../components/LoadingSkeleton";
 
 export default function Home() {
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage] = useState(8);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+        setLoading(true);
         const response = await dataProduct();
         setProducts(response.data);
       } catch (error) {
         console.error('Error fetching products:', error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchProducts();
@@ -36,45 +42,21 @@ export default function Home() {
 
   return (
     <div className="max-w-[1280px] mx-auto py-8">
-      <h1 className="text-[48px] font-bold mb-3">Products</h1>
+      <h1 className="text-[48px] font-bold mb-3">Sản phẩm</h1>
 
-      <div className="grid grid-cols-4 gap-x-5 gap-y-20">
-        {currentProducts.map((item) => (
-          <div
-            key={item.id}
-            className="h-[310px] bg-white rounded-[20px] shadow-xl flex flex-col overflow-hidden duration-300 ease-in-out group hover:h-[355px]"
-          >
-            <div className="relative">
-              <img
-                src={item.image}
-                alt={item.name}
-                className="w-full h-[160px] object-cover"
-              />
-            </div>
-
-            <div className="flex flex-col p-5">
-              <div className="line-clamp-1 font-bold text-[20px] mb-2">
-                {item.name}
-              </div>
-
-              <div className="text-[14px] mb-4">
-                <div className="line-clamp-1 duration-300 ease-in-out h-[25px] group-hover:line-clamp-none group-hover:h-[70px]">
-                  ⏺ {item.description}
-                </div>
-              </div>
-
-              <div className="flex justify-between items-center">
-                <div className="font-bold text-[20px] mt-auto">
-                  ${item.price}
-                </div>
-                <Link to={`/product/${item.id}`} className="text-white bg-[#1a1337] rounded-[5px] px-3 py-1">
-                  Xem chi tiết
-                </Link>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+      {loading ? (
+        <div className="grid grid-cols-4 gap-x-5 gap-y-20">
+          {[...Array(8)].map((_, index) => (
+            <ProductCardSkeleton key={index} />
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-4 gap-x-5 gap-y-20">
+          {currentProducts.map((item) => (
+            <Product key={item.id} data={item} />
+          ))}
+        </div>
+      )}
 
       {totalPages > 1 && (
         <div className="flex justify-center items-center mt-12">
