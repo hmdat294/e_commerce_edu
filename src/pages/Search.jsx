@@ -10,6 +10,7 @@ export default function Search() {
     const [priceFilter, setPriceFilter] = useState("all");
     const [currentPage, setCurrentPage] = useState(1);
     const [productsPerPage] = useState(6);
+    const [showFilters, setShowFilters] = useState(false);
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -66,88 +67,102 @@ export default function Search() {
     };
 
     return (
-        <div className="max-w-[1280px] mx-auto py-15">
-            <div className="flex gap-10">
-                <div className="mb-8 w-[20%]">
-                    <h2 className="text-[24px] font-semibold mb-4">Sắp xếp theo giá</h2>
+        <div className="max-w-[1280px] mx-auto py-8 sm:py-12 lg:py-15 px-4 sm:px-6 lg:px-8">
+            {/* Mobile Filter Toggle */}
+            <div className="lg:hidden mb-6">
+                <button
+                    onClick={() => setShowFilters(!showFilters)}
+                    className="w-full bg-white border border-gray-200 rounded-lg p-4 flex items-center justify-between shadow-sm"
+                >
+                    <span className="font-medium text-gray-700">Sắp xếp theo giá</span>
+                    <svg className={`w-5 h-5 transition-transform ${showFilters ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+            </div>
+
+            <div className="flex flex-col lg:flex-row gap-6 lg:gap-10">
+                {/* Sidebar - Hidden on mobile unless toggled */}
+                <div className={`lg:block ${showFilters ? 'block' : 'hidden'} mb-6 lg:mb-8 w-full lg:w-[20%]`}>
+                    <h2 className="text-[20px] sm:text-[22px] lg:text-[24px] font-semibold mb-4 text-[#1a1337]">Sắp xếp theo giá</h2>
                     <ul className="border border-gray-200 shadow-sm rounded-lg overflow-hidden">
                         <li>
-                            <label className={`px-4 py-2 border-b border-gray-200 flex items-center gap-2 cursor-pointer ${priceFilter === "all" ? "bg-gray-100" : ""}`}>
+                            <label className={`px-3 sm:px-4 py-2 border-b border-gray-200 flex items-center gap-2 cursor-pointer ${priceFilter === "all" ? "bg-gray-100" : ""}`}>
                                 <input
                                     type="radio"
                                     name="priceFilter"
                                     value="all"
                                     checked={priceFilter === "all"}
-                                    onChange={() => { setPriceFilter("all"); setCurrentPage(1); }}
+                                    onChange={() => { setPriceFilter("all"); setCurrentPage(1); setShowFilters(false); }}
                                     className="accent-gray-500 w-4 h-4"
                                 />
-                                <span >Tất cả</span>
+                                <span className="text-sm sm:text-base">Tất cả</span>
                             </label>
                         </li>
                         <li>
-                            <label className={`px-4 py-2 border-b border-gray-200 flex items-center gap-2 cursor-pointer ${priceFilter === "under-100" ? "bg-gray-100" : ""}`}>
+                            <label className={`px-3 sm:px-4 py-2 border-b border-gray-200 flex items-center gap-2 cursor-pointer ${priceFilter === "under-100" ? "bg-gray-100" : ""}`}>
                                 <input
                                     type="radio"
                                     name="priceFilter"
                                     value="under-100"
                                     checked={priceFilter === "under-100"}
-                                    onChange={() => { setPriceFilter("under-100"); setCurrentPage(1); }}
+                                    onChange={() => { setPriceFilter("under-100"); setCurrentPage(1); setShowFilters(false); }}
                                     className="accent-gray-500 w-4 h-4"
                                 />
-                                <span>Dưới 100$</span>
+                                <span className="text-sm sm:text-base">Dưới 100$</span>
                             </label>
                         </li>
                         <li>
-                            <label className={`px-4 py-2 border-b border-gray-200 flex items-center gap-2 cursor-pointer ${priceFilter === "100-500" ? "bg-gray-100" : ""}`}>
+                            <label className={`px-3 sm:px-4 py-2 border-b border-gray-200 flex items-center gap-2 cursor-pointer ${priceFilter === "100-500" ? "bg-gray-100" : ""}`}>
                                 <input
                                     type="radio"
                                     name="priceFilter"
                                     value="100-500"
                                     checked={priceFilter === "100-500"}
-                                    onChange={() => { setPriceFilter("100-500"); setCurrentPage(1); }}
+                                    onChange={() => { setPriceFilter("100-500"); setCurrentPage(1); setShowFilters(false); }}
                                     className="accent-gray-500 w-4 h-4"
                                 />
-                                <span>100$ - 500$</span>
+                                <span className="text-sm sm:text-base">100$ - 500$</span>
                             </label>
                         </li>
                         <li>
-                            <label className={`px-4 py-2 border-b border-gray-200 flex items-center gap-2 cursor-pointer ${priceFilter === "500-1000" ? "bg-gray-100" : ""}`}>
+                            <label className={`px-3 sm:px-4 py-2 border-b border-gray-200 flex items-center gap-2 cursor-pointer ${priceFilter === "500-1000" ? "bg-gray-100" : ""}`}>
                                 <input
                                     type="radio"
                                     name="priceFilter"
                                     value="500-1000"
                                     checked={priceFilter === "500-1000"}
-                                    onChange={() => { setPriceFilter("500-1000"); setCurrentPage(1); }}
+                                    onChange={() => { setPriceFilter("500-1000"); setCurrentPage(1); setShowFilters(false); }}
                                     className="accent-gray-500 w-4 h-4"
                                 />
-                                <span>500$ - 1000$</span>
+                                <span className="text-sm sm:text-base">500$ - 1000$</span>
                             </label>
                         </li>
                         <li>
-                            <label className={`px-4 py-2 border-b border-gray-200 flex items-center gap-2 cursor-pointer ${priceFilter === "over-1000" ? "bg-gray-100" : ""}`}>
+                            <label className={`px-3 sm:px-4 py-2 border-b border-gray-200 flex items-center gap-2 cursor-pointer ${priceFilter === "over-1000" ? "bg-gray-100" : ""}`}>
                                 <input
                                     type="radio"
                                     name="priceFilter"
                                     value="over-1000"
                                     checked={priceFilter === "over-1000"}
-                                    onChange={() => { setPriceFilter("over-1000"); setCurrentPage(1); }}
+                                    onChange={() => { setPriceFilter("over-1000"); setCurrentPage(1); setShowFilters(false); }}
                                     className="accent-gray-500 w-4 h-4"
                                 />
-                                <span>Trên 1000$</span>
+                                <span className="text-sm sm:text-base">Trên 1000$</span>
                             </label>
                         </li>
                     </ul>
                 </div>
 
-                <div className="w-[80%]">
+                <div className="w-full lg:w-[80%]">
                     {loading ? (
-                        <div className="grid grid-cols-3 gap-x-5 gap-y-20">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-x-5 lg:gap-y-20">
                             {[...Array(6)].map((_, index) => (
                                 <ProductCardSkeleton key={index} />
                             ))}
                         </div>
                     ) : (
-                        <div className="grid grid-cols-3 gap-x-5 gap-y-20">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-x-5 lg:gap-y-20">
                             {currentProducts.map((item) => (
                                 <Product key={item.id} data={item} />
                             ))}
@@ -155,13 +170,13 @@ export default function Search() {
                     )}
 
                     {filteredSearch.length === 0 && (
-                        <div className="text-center py-12">
-                            <p className="text-gray-500 text-lg">
+                        <div className="text-center py-8 sm:py-12">
+                            <p className="text-gray-500 text-base sm:text-lg">
                                 Không tìm thấy sản phẩm nào.
                             </p>
                             {filteredSearch.length === 0 && priceFilter !== "all" && (<button
                                 onClick={() => setPriceFilter("all")}
-                                className="mt-4 bg-[#1a1337] text-white px-6 py-2 rounded-lg hover:bg-[#1a1337]/80 transition-colors cursor-pointer"
+                                className="mt-4 bg-[#1a1337] text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-[#1a1337]/80 transition-colors cursor-pointer text-sm sm:text-base"
                             >
                                 Xóa bộ lọc
                             </button>)}
@@ -169,16 +184,16 @@ export default function Search() {
                     )}
 
                     {totalPages > 1 && (
-                        <div className="flex justify-center items-center mt-12">
+                        <div className="flex justify-center items-center mt-8 sm:mt-10 lg:mt-12">
                             <div className="flex border border-gray-200 rounded-lg bg-white overflow-hidden shadow-sm">
                                 <button
                                     onClick={handlePrevPage}
                                     disabled={currentPage === 1}
-                                    className={`w-12 h-12 flex items-center justify-center border-r border-gray-200 transition-colors ${currentPage === 1
+                                    className={`w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center border-r border-gray-200 transition-colors ${currentPage === 1
                                         ? 'bg-gray-100 text-gray-300 cursor-not-allowed'
                                         : 'hover:bg-gray-100 text-gray-500'
                                         }`}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 sm:w-5 sm:h-5">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
                                     </svg>
                                 </button>
@@ -187,7 +202,7 @@ export default function Search() {
                                     <button
                                         key={pageNumber}
                                         onClick={() => handlePageChange(pageNumber)}
-                                        className={`w-12 h-12 flex items-center justify-center border-r border-gray-200 font-medium transition-colors
+                                        className={`w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center border-r border-gray-200 font-medium transition-colors text-sm sm:text-base
                                         ${currentPage === pageNumber
                                                 ? 'text-orange-500 bg-gray-100 cursor-default'
                                                 : 'text-gray-700 hover:bg-gray-50'}`}
@@ -201,11 +216,11 @@ export default function Search() {
                                 <button
                                     onClick={handleNextPage}
                                     disabled={currentPage === totalPages}
-                                    className={`w-12 h-12 flex items-center justify-center border-l border-gray-200 transition-colors ${currentPage === totalPages
+                                    className={`w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center border-l border-gray-200 transition-colors ${currentPage === totalPages
                                         ? 'bg-gray-100 text-gray-300 cursor-not-allowed'
                                         : 'hover:bg-gray-100 text-gray-500'
                                         }`}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 sm:w-5 sm:h-5">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                                     </svg>
                                 </button>

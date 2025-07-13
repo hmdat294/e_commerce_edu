@@ -6,6 +6,7 @@ import Detail from './pages/Detail'
 import Search from './pages/Search'
 import Favorite from './pages/Favorite'
 import Suggestions from './pages/Suggestions'
+import History from './pages/History'
 
 function App() {
 
@@ -18,6 +19,7 @@ function App() {
         <Route path="/search/:keyword" element={<Search />} />
         <Route path="/favorite" element={<Favorite />} />
         <Route path="/suggestions" element={<Suggestions />} />
+        <Route path="/history" element={<History />} />
       </Routes>
       <Footer />
     </BrowserRouter>

@@ -121,28 +121,28 @@ export default function Detail() {
 
   if (productsDetail) return (
     <div>
-      <div className="relative z-10 max-w-[1280px] mx-auto pt-10 pb-20 px-4">
-        <div className="flex flex-col md:flex-row gap-10 items-start">
+      <div className="relative z-10 max-w-[1280px] mx-auto pt-6 sm:pt-8 lg:pt-10 pb-12 sm:pb-16 lg:pb-20 px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col lg:flex-row gap-6 sm:gap-8 lg:gap-10 items-start">
 
-          <div className="flex-1 min-w-[320px]">
-            <Link to="/" className="flex items-center gap-2 text-gray-500 hover:text-blue-600 mb-6 font-medium text-base bg-transparent border-none p-0">
-              <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+          <div className="flex-1 min-w-0 lg:min-w-[320px] w-full">
+            <Link to="/" className="flex items-center gap-2 text-gray-500 hover:text-blue-600 mb-4 sm:mb-6 font-medium text-sm sm:text-base bg-transparent border-none p-0">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="sm:w-5 sm:h-5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
               </svg>
               Quay lại trang chủ
             </Link>
-            <div className="flex justify-between items-center gap-4 mb-6">
-              <h1 className="text-5xl font-bold leading-tight text-black">{productsDetail.name}</h1>
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4 sm:mb-6">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold leading-tight text-black">{productsDetail.name}</h1>
 
               <button
                 onClick={handleLike}
-                className={`p-3 rounded-full transition-colors duration-200 cursor-pointer ${isLiked
+                className={`p-2 sm:p-3 rounded-full transition-colors duration-200 cursor-pointer self-start sm:self-auto ${isLiked
                   ? 'text-red-500 bg-red-50 hover:bg-red-100'
                   : 'text-gray-400 bg-gray-50 hover:bg-gray-100 hover:text-red-400'
                   }`}
                 title={isLiked ? 'Bỏ thích' : 'Thích'}>
                 <svg
-                  className="w-10 h-10"
+                  className="w-8 h-8 sm:w-10 sm:h-10"
                   fill={isLiked ? "currentColor" : "none"}
                   stroke="currentColor"
                   viewBox="0 0 24 24">
@@ -155,13 +155,13 @@ export default function Detail() {
                 </svg>
               </button>
             </div>
-            <div className="flex items-center gap-2 mb-6">
+            <div className="flex items-center gap-2 mb-4 sm:mb-6">
               <div className="flex items-center">
 
                 {[...Array(5)].map((value, index) => (
                   <svg
                     key={index}
-                    className={`w-5 h-5 ${index < Math.floor(productsDetail.rate)
+                    className={`w-4 h-4 sm:w-5 sm:h-5 ${index < Math.floor(productsDetail.rate)
                       ? 'text-yellow-400 fill-current'
                       : 'text-gray-100'
                       }`}
@@ -172,16 +172,16 @@ export default function Detail() {
                 ))}
 
               </div>
-              <span className="text-gray-600 font-medium">({productsDetail.rate})</span>
+              <span className="text-gray-600 font-medium text-sm sm:text-base">({productsDetail.rate})</span>
             </div>
-            <p className="text-lg text-gray-700 mb-6 max-w-2xl">⏺ {productsDetail.description}</p>
-            <p className="text-lg text-gray-700 mb-6 max-w-2xl capitalize">{productsDetail.long_description}</p>
+            <p className="text-base sm:text-lg text-gray-700 mb-4 sm:mb-6 max-w-2xl">⏺ {productsDetail.description}</p>
+            <p className="text-base sm:text-lg text-gray-700 mb-4 sm:mb-6 max-w-2xl capitalize">{productsDetail.long_description}</p>
 
-            <div className="flex items-center gap-10">
-              <div className="text-2xl font-bold text-[#222]">${productsDetail.price}</div>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-10">
+              <div className="text-xl sm:text-2xl font-bold text-[#222]">${productsDetail.price}</div>
               <button
                 type="button"
-                className="h-full w-[250px] font-semibold px-6 py-2 bg-gradient-to-r from-[#7f5fff] to-[#5f3fff] cursor-pointer rounded-xl flex items-center justify-center text-white"
+                className="h-full w-full sm:w-[250px] font-semibold px-4 sm:px-6 py-2 bg-gradient-to-r from-[#7f5fff] to-[#5f3fff] cursor-pointer rounded-xl flex items-center justify-center text-white text-sm sm:text-base"
                 style={{ border: 'none' }}
               >
                 Mua ngay
@@ -189,8 +189,8 @@ export default function Detail() {
             </div>
           </div>
 
-          <div className="w-full md:w-[500px] bg-white rounded-3xl shadow-2xl p-5 flex flex-col items-center mt-10">
-            <img src={productsDetail.image} alt="Combo" className="w-full h-[300px] object-cover rounded-2xl" />
+          <div className="w-full lg:w-[500px] bg-white rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl p-4 sm:p-5 flex flex-col items-center mt-6 sm:mt-8 lg:mt-10">
+            <img src={productsDetail.image} alt="Combo" className="w-full h-[200px] sm:h-[250px] lg:h-[300px] object-cover rounded-xl sm:rounded-2xl" />
           </div>
         </div>
       </div>

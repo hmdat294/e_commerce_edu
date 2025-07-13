@@ -57,7 +57,7 @@ export default function Product(data) {
     return (
         <div
             key={product.id}
-            className="h-[360px] bg-white rounded-[20px] shadow-xl flex flex-col overflow-hidden duration-300 ease-in-out group hover:h-[405px]"
+            className="h-[370px] bg-white rounded-tl-[30px] rounded-br-[30px] shadow-2xl flex flex-col overflow-hidden duration-300 ease-in-out group hover:h-[415px]"
         >
             <div className="relative">
                 <img
@@ -105,7 +105,7 @@ export default function Product(data) {
                 </div>
 
                 <div className="flex">
-                    <Link to={`/product/${product.id}`} className="w-full text-center text-white bg-[#1a1337] hover:bg-[#1a1337]/80 transition-colors duration-200 rounded-[5px] px-3 py-1">
+                    <Link to={`/product/${product.id}`} className="w-full text-center text-white bg-[#1a1337] hover:bg-[#1a1337]/80 transition-colors duration-200 rounded-tl-[15px] rounded-br-[15px] px-3 py-2">
                         Xem chi tiết
                     </Link>
                 </div>
