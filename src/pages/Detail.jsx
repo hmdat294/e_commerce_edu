@@ -83,12 +83,12 @@ export default function Detail() {
 
   }, [isLiked, productDetail]);
 
+  if (loading) return <ProductDetailSkeleton />;
+  if (!productDetail) return null;
+
   const relatedProducts = products.filter((item) =>
     item.category === productDetail.category && item.id !== productDetail.id
   ).slice(0, 4);
-
-  if (loading) return <ProductDetailSkeleton />;
-  if (!productDetail) return null;
 
   return (
     <div className="relative z-10 max-w-[1280px] mx-auto pt-6 sm:pt-8 lg:pt-10 pb-12 sm:pb-16 lg:pb-20 px-4 sm:px-6 lg:px-8">
