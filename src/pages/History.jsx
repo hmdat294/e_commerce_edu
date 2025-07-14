@@ -29,7 +29,7 @@ export default function History() {
     }, [viewedVersion, products]);
 
     const viewedProducts = useMemo(() => (
-        products.filter(product => viewedIds.includes(product.id))
+        [...products.filter(product => viewedIds.includes(product.id))].reverse()
     ), [products, viewedIds]);
 
     const clearHistory = useCallback(() => {
