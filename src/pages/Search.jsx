@@ -21,9 +21,12 @@ export default function Search() {
             .finally(() => setLoading(false));
     }, []);
 
-    // Hàm lọc theo giá
     const filterByPrice = useCallback((product) => {
-        const price = parseFloat(product.price.replace(/[^\\d.]/g, ''));
+        let price = product.price;
+        if (typeof price === "string") {
+            price = parseFloat(price.replace(/[^\d.]/g, ""));
+        }
+        if (isNaN(price)) return false;
         switch (priceFilter) {
             case "under-100": return price < 100;
             case "100-500": return price >= 100 && price <= 500;
@@ -33,25 +36,21 @@ export default function Search() {
         }
     }, [priceFilter]);
 
-    // Lọc sản phẩm theo từ khóa và giá
     const filteredSearch = useMemo(() => (
         keyword
             ? products.filter(product => product.name.toLowerCase().includes(keyword.toLowerCase()) && filterByPrice(product))
             : products.filter(filterByPrice)
     ), [products, keyword, filterByPrice]);
 
-    // Phân trang
     const totalPages = useMemo(() => Math.ceil(filteredSearch.length / productsPerPage), [filteredSearch, productsPerPage]);
     const currentProducts = useMemo(() => (
         filteredSearch.slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage)
     ), [filteredSearch, currentPage, productsPerPage]);
 
-    // Các hàm phân trang
     const handlePageChange = useCallback((pageNumber) => setCurrentPage(pageNumber), []);
     const handlePrevPage = useCallback(() => setCurrentPage(p => Math.max(1, p - 1)), []);
     const handleNextPage = useCallback(() => setCurrentPage(p => Math.min(totalPages, p + 1)), [totalPages]);
 
-    // Reset trang khi đổi filter
     const handleFilterChange = (value) => {
         setPriceFilter(value);
         setCurrentPage(1);
@@ -60,7 +59,6 @@ export default function Search() {
 
     return (
         <div className="max-w-[1280px] mx-auto py-8 sm:py-12 lg:py-15 px-4 sm:px-6 lg:px-8">
-            {/* Mobile Filter Toggle */}
             <div className="lg:hidden mb-6">
                 <button
                     onClick={() => setShowFilters(!showFilters)}
@@ -74,7 +72,6 @@ export default function Search() {
             </div>
 
             <div className="flex flex-col lg:flex-row gap-6 lg:gap-10">
-                {/* Sidebar - Hidden on mobile unless toggled */}
                 <div className={`lg:block ${showFilters ? 'block' : 'hidden'} mb-6 lg:mb-8 w-full lg:w-[20%]`}>
                     <h2 className="text-[20px] sm:text-[22px] lg:text-[24px] font-semibold mb-4 text-[#1a1337]">Sắp xếp theo giá</h2>
                     <ul className="border border-gray-200 shadow-sm rounded-lg overflow-hidden">
