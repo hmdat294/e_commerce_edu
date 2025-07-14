@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { dataProduct } from '../../api/api';
 import { Link, useNavigate } from 'react-router-dom';
-import { getCookie } from '../../cookie/cookie';
+import { getCookie, setCookie } from '../../cookie/cookie';
 
 export default function Header() {
     const [searchQuery, setSearchQuery] = useState('');
@@ -12,6 +12,7 @@ export default function Header() {
     const [notificationMessage, setNotificationMessage] = useState('');
     const [notificationType, setNotificationType] = useState('success');
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [searchHistory, setSearchHistory] = useState([]);
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -24,6 +25,45 @@ export default function Header() {
         };
         fetchProducts();
     }, []);
+
+    // Load search history from cookie
+    useEffect(() => {
+        const loadSearchHistory = () => {
+            const history = getCookie('searchHistory');
+            if (history) {
+                try {
+                    const parsedHistory = JSON.parse(history);
+                    setSearchHistory(parsedHistory);
+                } catch (error) {
+                    console.error('Error parsing search history cookie:', error);
+                    setSearchHistory([]);
+                }
+            }
+        };
+        loadSearchHistory();
+    }, []);
+
+    // Save search history to cookie
+    const saveSearchHistory = (query) => {
+        if (!query.trim()) return;
+        
+        const newHistory = [query.trim(), ...searchHistory.filter(item => item !== query.trim())].slice(0, 5);
+        setSearchHistory(newHistory);
+        setCookie('searchHistory', JSON.stringify(newHistory), 30);
+    };
+
+    // Clear search history
+    const clearSearchHistory = () => {
+        setSearchHistory([]);
+        setCookie('searchHistory', JSON.stringify([]), 30);
+    };
+
+    // Remove specific item from search history
+    const removeFromHistory = (itemToRemove) => {
+        const newHistory = searchHistory.filter(item => item !== itemToRemove);
+        setSearchHistory(newHistory);
+        setCookie('searchHistory', JSON.stringify(newHistory), 30);
+    };
 
     useEffect(() => {
         const updateLikedCount = () => {
@@ -79,6 +119,7 @@ export default function Header() {
         e.preventDefault();
         if (searchQuery.trim()) {
             navigate(`/search/${encodeURIComponent(searchQuery.trim())}`);
+            saveSearchHistory(searchQuery.trim());
         }
     };
 
@@ -120,28 +161,84 @@ export default function Header() {
                             </button>
                         </form>
 
-                        {!isFocused || filteredResults.length > 0 && (
+                        {isFocused && (
                             <div className="absolute top-full left-0 right-0 bg-white text-black rounded-lg shadow-lg mt-1 z-50 max-h-[300px] sm:max-h-[400px] overflow-y-auto">
-                                {filteredResults.map((result) => (
-                                    <Link to={`/product/${result.id}`} key={result.id}
-                                        className="px-3 sm:px-4 py-2 sm:py-3 hover:bg-gray-100 border-b border-gray-200 last:border-b-0 flex items-center gap-2 sm:gap-3">
-                                        <img
-                                            src={result.image}
-                                            alt={result.name}
-                                            className="w-8 h-8 sm:w-12 sm:h-12 object-cover rounded"
-                                        />
-                                        <div className="flex-1 min-w-0">
-                                            <div className="font-medium text-xs sm:text-sm truncate">{result.name}</div>
-                                            <div className="text-xs text-gray-600 line-clamp-1 hidden sm:block">{result.description}</div>
-                                            <div className="text-xs sm:text-sm font-bold">${result.price}</div>
+                                {/* Search Results */}
+                                {filteredResults.length > 0 && (
+                                    <>
+                                        <div className="px-3 sm:px-4 py-2 bg-gray-50 border-b border-gray-200">
+                                            <div className="text-xs sm:text-sm font-medium text-gray-600">Kết quả tìm kiếm</div>
                                         </div>
-                                    </Link>
-                                ))}
-                            </div>
-                        )}
-                        {searchQuery.trim() && filteredResults.length === 0 && (
-                            <div className="absolute top-full left-0 right-0 bg-white text-black rounded-lg shadow-lg mt-1 z-50 p-3 sm:p-4">
-                                <div className="text-gray-500 text-center text-sm sm:text-base">Không tìm thấy sản phẩm phù hợp</div>
+                                        {filteredResults.map((result) => (
+                                            <Link to={`/product/${result.id}`} key={result.id}
+                                                className="px-3 sm:px-4 py-2 sm:py-3 hover:bg-gray-100 border-b border-gray-200 last:border-b-0 flex items-center gap-2 sm:gap-3">
+                                                <img
+                                                    src={result.image}
+                                                    alt={result.name}
+                                                    className="w-8 h-8 sm:w-12 sm:h-12 object-cover rounded"
+                                                />
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="font-medium text-xs sm:text-sm truncate">{result.name}</div>
+                                                    <div className="text-xs text-gray-600 line-clamp-1 hidden sm:block">{result.description}</div>
+                                                    <div className="text-xs sm:text-sm font-bold">${result.price}</div>
+                                                </div>
+                                            </Link>
+                                        ))}
+                                    </>
+                                )}
+
+                                {/* Search History */}
+                                {searchHistory.length > 0 && !searchQuery.trim() && (
+                                    <>
+                                        <div className="px-3 sm:px-4 py-2 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
+                                            <div className="text-xs sm:text-sm font-medium text-gray-600">Lịch sử tìm kiếm</div>
+                                            <button
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    clearSearchHistory();
+                                                }}
+                                                className="text-xs text-red-500 hover:text-red-700"
+                                            >
+                                                Xóa tất cả
+                                            </button>
+                                        </div>
+                                        {searchHistory.map((item, index) => (
+                                            <div key={index} className="px-3 sm:px-4 py-2 sm:py-3 hover:bg-gray-100 border-b border-gray-200 last:border-b-0 flex items-center justify-between group">
+                                                <Link
+                                                    to={`/search/${encodeURIComponent(item)}`}
+                                                    className="flex-1 flex items-center gap-2 sm:gap-3"
+                                                    onClick={() => {
+                                                        setSearchQuery(item);
+                                                        saveSearchHistory(item);
+                                                    }}
+                                                >
+                                                    <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                    </svg>
+                                                    <span className="text-sm sm:text-base truncate">{item}</span>
+                                                </Link>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        removeFromHistory(item);
+                                                    }}
+                                                    className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-400 hover:text-red-500 p-1"
+                                                >
+                                                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </>
+                                )}
+
+                                {/* No Results */}
+                                {searchQuery.trim() && filteredResults.length === 0 && (
+                                    <div className="p-3 sm:p-4">
+                                        <div className="text-gray-500 text-center text-sm sm:text-base">Không tìm thấy sản phẩm phù hợp</div>
+                                    </div>
+                                )}
                             </div>
                         )}
                     </div>
@@ -203,28 +300,84 @@ export default function Header() {
                     </button>
                 </form>
 
-                {!isFocused || filteredResults.length > 0 && (
+                {isFocused && (
                     <div className="m-4 absolute top-full left-0 right-0 bg-white text-black rounded-lg shadow-lg mt-1 z-50 max-h-[300px] overflow-y-auto">
-                        {filteredResults.map((result) => (
-                            <Link to={`/product/${result.id}`} key={result.id}
-                                className="p-3 hover:bg-gray-100 border-b border-gray-200 last:border-b-0 flex items-center gap-2">
-                                <img
-                                    src={result.image}
-                                    alt={result.name}
-                                    className="w-8 h-8 sm:w-12 sm:h-12 object-cover rounded"
-                                />
-                                <div className="flex-1 min-w-0">
-                                    <div className="font-medium text-xs sm:text-sm truncate">{result.name}</div>
-                                    <div className="text-xs text-gray-600 line-clamp-1 hidden sm:block">{result.description}</div>
-                                    <div className="text-xs sm:text-sm font-bold">${result.price}</div>
+                        {/* Search Results */}
+                        {filteredResults.length > 0 && (
+                            <>
+                                <div className="px-3 py-2 bg-gray-50 border-b border-gray-200">
+                                    <div className="text-xs font-medium text-gray-600">Kết quả tìm kiếm</div>
                                 </div>
-                            </Link>
-                        ))}
-                    </div>
-                )}
-                {searchQuery.trim() && filteredResults.length === 0 && (
-                    <div className="m-4 absolute top-full left-0 right-0 bg-white text-black rounded-lg shadow-lg mt-1 z-50 p-3">
-                        <div className="text-gray-500 text-center text-sm sm:text-base">Không tìm thấy sản phẩm phù hợp</div>
+                                {filteredResults.map((result) => (
+                                    <Link to={`/product/${result.id}`} key={result.id}
+                                        className="p-3 hover:bg-gray-100 border-b border-gray-200 last:border-b-0 flex items-center gap-2">
+                                        <img
+                                            src={result.image}
+                                            alt={result.name}
+                                            className="w-8 h-8 sm:w-12 sm:h-12 object-cover rounded"
+                                        />
+                                        <div className="flex-1 min-w-0">
+                                            <div className="font-medium text-xs sm:text-sm truncate">{result.name}</div>
+                                            <div className="text-xs text-gray-600 line-clamp-1 hidden sm:block">{result.description}</div>
+                                            <div className="text-xs sm:text-sm font-bold">${result.price}</div>
+                                        </div>
+                                    </Link>
+                                ))}
+                            </>
+                        )}
+
+                        {/* Search History */}
+                        {searchHistory.length > 0 && !searchQuery.trim() && (
+                            <>
+                                <div className="px-3 py-2 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
+                                    <div className="text-xs font-medium text-gray-600">Lịch sử tìm kiếm</div>
+                                    <button
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            clearSearchHistory();
+                                        }}
+                                        className="text-xs text-red-500 hover:text-red-700"
+                                    >
+                                        Xóa tất cả
+                                    </button>
+                                </div>
+                                {searchHistory.map((item, index) => (
+                                    <div key={index} className="p-3 hover:bg-gray-100 border-b border-gray-200 last:border-b-0 flex items-center justify-between group">
+                                        <Link
+                                            to={`/search/${encodeURIComponent(item)}`}
+                                            className="flex-1 flex items-center gap-2"
+                                            onClick={() => {
+                                                setSearchQuery(item);
+                                                saveSearchHistory(item);
+                                            }}
+                                        >
+                                            <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            <span className="text-sm truncate">{item}</span>
+                                        </Link>
+                                        <button
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                removeFromHistory(item);
+                                            }}
+                                            className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-400 hover:text-red-500 p-1"
+                                        >
+                                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                ))}
+                            </>
+                        )}
+
+                        {/* No Results */}
+                        {searchQuery.trim() && filteredResults.length === 0 && (
+                            <div className="p-3">
+                                <div className="text-gray-500 text-center text-sm">Không tìm thấy sản phẩm phù hợp</div>
+                            </div>
+                        )}
                     </div>
                 )}
             </div>

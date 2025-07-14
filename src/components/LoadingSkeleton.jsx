@@ -4,7 +4,7 @@ import React from 'react';
 export const ProductCardSkeleton = () => {
   return (
     <div className="animate-pulse">
-      <div className="bg-gray-200 rounded-lg h-[140px] sm:h-[150px] lg:h-[160px] mb-3 sm:mb-4"></div>
+      <div className="bg-gray-200 rounded-tl-[30px] rounded-br-[30px] h-[140px] sm:h-[150px] lg:h-[160px] mb-3 sm:mb-4"></div>
       <div className="space-y-2 sm:space-y-3">
         <div className="h-3 sm:h-4 bg-gray-200 rounded w-3/4"></div>
         <div className="h-3 sm:h-4 bg-gray-200 rounded w-1/2"></div>

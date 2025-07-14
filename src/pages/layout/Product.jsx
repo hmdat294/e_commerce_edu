@@ -105,7 +105,7 @@ export default function Product(data) {
                 </div>
 
                 <div className="flex">
-                    <Link to={`/product/${product.id}`} className="w-full text-center text-white bg-[#1a1337] hover:bg-[#1a1337]/80 transition-colors duration-200 rounded-tl-[15px] rounded-br-[15px] px-3 py-2">
+                    <Link to={`/product/${product.id}`} className="w-full text-center text-white bg-gradient-to-r from-[#7f5fff] to-[#5f3fff] transition-colors duration-200 rounded-tl-[15px] rounded-br-[15px] px-3 py-2">
                         Xem chi tiết
                     </Link>
                 </div>

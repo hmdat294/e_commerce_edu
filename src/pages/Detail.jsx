@@ -1,15 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { dataProductDetail } from '../api/api';
+import { dataProduct, dataProductDetail } from '../api/api';
 import { ProductDetailSkeleton } from '../components/LoadingSkeleton';
 import { getCookie, setCookie, removeCookie } from '../cookie/cookie';
+import Product from './layout/Product';
 
 export default function Detail() {
 
+  const [products, setProducts] = useState([]);
   const [productsDetail, setProductsDetail] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isLiked, setIsLiked] = useState(false);
   const { id } = useParams();
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await dataProduct();
+        setProducts(response.data);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, []);
 
   useEffect(() => {
     const fetchProductsDetail = async () => {
@@ -113,15 +130,20 @@ export default function Detail() {
       }));
     }
 
+
     if (likedIds.length > 0) setCookie('likedProducts', JSON.stringify(likedIds));
     else removeCookie('likedProducts');
 
     window.dispatchEvent(new CustomEvent('likeChange'));
   };
 
+  const relatedProducts = products.filter((item) =>
+    item.category === productsDetail.category && item.id !== productsDetail.id
+  ).slice(0, 4);
+
   if (productsDetail) return (
-    <div>
-      <div className="relative z-10 max-w-[1280px] mx-auto pt-6 sm:pt-8 lg:pt-10 pb-12 sm:pb-16 lg:pb-20 px-4 sm:px-6 lg:px-8">
+    <div className="relative z-10 max-w-[1280px] mx-auto pt-6 sm:pt-8 lg:pt-10 pb-12 sm:pb-16 lg:pb-20 px-4 sm:px-6 lg:px-8">
+      <div className='pt-5 pb-15'>
         <div className="flex flex-col lg:flex-row gap-6 sm:gap-8 lg:gap-10 items-start">
 
           <div className="flex-1 min-w-0 lg:min-w-[320px] w-full">
@@ -194,6 +216,25 @@ export default function Detail() {
           </div>
         </div>
       </div>
+
+      {relatedProducts.length > 0 && (
+        <div>
+          <h2 className="text-xl font-bold mt-8 mb-4">Sản phẩm cùng loại</h2>
+          {loading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 lg:gap-x-5 lg:gap-y-20">
+              {[...Array(8)].map((_, index) => (
+                <ProductCardSkeleton key={index} />
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 lg:gap-x-5 lg:gap-y-20">
+              {relatedProducts.map((item) => (
+                <Product key={item.id} data={item} />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 } 
