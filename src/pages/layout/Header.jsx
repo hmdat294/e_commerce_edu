@@ -3,7 +3,6 @@ import { dataProduct } from '../../api/api';
 import { Link, useNavigate } from 'react-router-dom';
 import { getCookie, setCookie } from '../../cookie/cookie';
 
-// Notification component
 function Notification({ show, message, type }) {
     if (!show) return null;
     return (
@@ -24,7 +23,6 @@ function Notification({ show, message, type }) {
     );
 }
 
-// SearchHistory component
 function SearchHistory({ history, onClear, onRemove, onSelect }) {
     if (!history.length) return null;
     return (
@@ -52,7 +50,6 @@ function SearchHistory({ history, onClear, onRemove, onSelect }) {
     );
 }
 
-// SearchResults component
 function SearchResults({ results }) {
     if (!results.length) return null;
     return (
@@ -74,7 +71,6 @@ function SearchResults({ results }) {
     );
 }
 
-// SearchBox component (dùng chung cho desktop/mobile)
 function SearchBox({ searchQuery, setSearchQuery, onSearch, isFocused, setIsFocused, filteredResults, searchHistory, onClearHistory, onRemoveHistory, onSelectHistory }) {
     return (
         <div className="relative w-full">
@@ -202,7 +198,6 @@ export default function Header() {
                 <Link to="/" className="flex items-center gap-2">
                     <span className="font-semibold text-[16px] sm:text-[18px] lg:text-[20px] ml-2">E Commrece Edu</span>
                 </Link>
-                {/* Desktop Navigation */}
                 <nav className="hidden md:flex items-center gap-4 lg:gap-8">
                     <Link to="/suggestions" className="text-white no-underline font-medium text-sm lg:text-base">Gợi ý sản phẩm</Link>
                     <Link to="/history" className="text-white no-underline font-medium text-sm lg:text-base">Lịch sử xem</Link>
@@ -241,7 +236,6 @@ export default function Header() {
                     </button>
                 </div>
             </div>
-            {/* Mobile Search */}
             <div className="relative sm:hidden block flex items-center justify-end px-4 pb-4 w-full">
                 <SearchBox
                     searchQuery={searchQuery}

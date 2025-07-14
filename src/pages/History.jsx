@@ -103,8 +103,7 @@ export default function History() {
                             className={`w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center border-r border-gray-200 transition-colors ${currentPage === 1
                                 ? 'bg-gray-100 text-gray-300 cursor-not-allowed'
                                 : 'hover:bg-gray-100 text-gray-500'
-                                }`}
-                        >
+                                }`}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 sm:w-5 sm:h-5">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
                             </svg>
@@ -120,8 +119,7 @@ export default function History() {
                                         : 'text-gray-700 hover:bg-gray-50'}
                                         `}
                                 disabled={currentPage === pageNumber}
-                                style={{ borderRight: pageNumber === totalPages ? 'none' : undefined }}
-                            >
+                                style={{ borderRight: pageNumber === totalPages ? 'none' : undefined }}>
                                 {pageNumber}
                             </button>
                         ))}
@@ -132,8 +130,7 @@ export default function History() {
                             className={`w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center border-l border-gray-200 transition-colors ${currentPage === totalPages
                                 ? 'bg-gray-100 text-gray-300 cursor-not-allowed'
                                 : 'hover:bg-gray-100 text-gray-500'
-                                }`}
-                        >
+                                }`}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 sm:w-5 sm:h-5">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                             </svg>

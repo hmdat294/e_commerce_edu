@@ -62,8 +62,7 @@ export default function Search() {
             <div className="lg:hidden mb-6">
                 <button
                     onClick={() => setShowFilters(!showFilters)}
-                    className="w-full bg-white border border-gray-200 rounded-lg p-4 flex items-center justify-between shadow-sm"
-                >
+                    className="w-full bg-white border border-gray-200 rounded-lg p-4 flex items-center justify-between shadow-sm">
                     <span className="font-medium text-gray-700">Sắp xếp theo giá</span>
                     <svg className={`w-5 h-5 transition-transform ${showFilters ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -121,8 +120,7 @@ export default function Search() {
                             </p>
                             {filteredSearch.length === 0 && priceFilter !== "all" && (<button
                                 onClick={() => setPriceFilter("all")}
-                                className="mt-4 bg-[#1a1337] text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-[#1a1337]/80 transition-colors cursor-pointer text-sm sm:text-base"
-                            >
+                                className="mt-4 bg-[#1a1337] text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-[#1a1337]/80 transition-colors cursor-pointer text-sm sm:text-base">
                                 Xóa bộ lọc
                             </button>)}
                         </div>
@@ -152,8 +150,7 @@ export default function Search() {
                                                 ? 'text-orange-500 bg-gray-100 cursor-default'
                                                 : 'text-gray-700 hover:bg-gray-50'}`}
                                         disabled={currentPage === pageNumber}
-                                        style={{ borderRight: pageNumber === totalPages ? 'none' : undefined }}
-                                    >
+                                        style={{ borderRight: pageNumber === totalPages ? 'none' : undefined }}>
                                         {pageNumber}
                                     </button>
                                 ))}
