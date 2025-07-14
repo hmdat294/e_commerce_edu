@@ -29,7 +29,7 @@ export default function Favorite() {
   }, [likeVersion, products]);
 
   const likedProducts = useMemo(() => (
-    [...products.filter(product => likedIds.includes(product.id))].reverse()
+    products.filter(product => likedIds.includes(product.id))
   ), [products, likedIds]);
 
   useEffect(() => {

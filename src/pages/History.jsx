@@ -63,7 +63,7 @@ export default function History() {
                         </div>
                         <button
                             onClick={clearHistory}
-                            className="px-3 sm:px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors cursor-pointer text-sm sm:text-base">
+                            className="px-3 sm:px-4 py-2 bg-[#1a1337] text-white rounded-lg hover:bg-[#1a1337]/80 transition-colors cursor-pointer text-sm sm:text-base">
                             Xóa lịch sử
                         </button>
                     </div>
