@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { dataProduct } from "../api/api";
-import { Link } from "react-router-dom";
 import Product from "./layout/Product";
 import { ProductCardSkeleton } from "../components/LoadingSkeleton";
 
@@ -11,18 +10,11 @@ export default function Home() {
   const [productsPerPage] = useState(8);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        const response = await dataProduct();
-        setProducts(response.data);
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProducts();
+    setLoading(true);
+    dataProduct()
+      .then(res => setProducts(res.data))
+      .catch(console.error)
+      .finally(() => setLoading(false));
   }, []);
 
   const indexOfLastProduct = currentPage * productsPerPage;
@@ -46,7 +38,7 @@ export default function Home() {
 
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 lg:gap-x-5 lg:gap-y-20">
-          {[...Array(8)].map((_, index) => (
+          {[...Array(productsPerPage)].map((_, index) => (
             <ProductCardSkeleton key={index} />
           ))}
         </div>

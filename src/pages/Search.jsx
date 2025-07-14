@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { dataProduct } from "../api/api";
 import { Link, useParams } from "react-router-dom";
 import Product from "./layout/Product";
@@ -9,61 +9,53 @@ export default function Search() {
     const [loading, setLoading] = useState(true);
     const [priceFilter, setPriceFilter] = useState("all");
     const [currentPage, setCurrentPage] = useState(1);
-    const [productsPerPage] = useState(6);
     const [showFilters, setShowFilters] = useState(false);
-
-    useEffect(() => {
-        const fetchProducts = async () => {
-            try {
-                setLoading(true);
-                const response = await dataProduct();
-                setProducts(response.data);
-            } catch (error) {
-                console.error('Error fetching products:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchProducts();
-    }, []);
-
+    const productsPerPage = 6;
     const { keyword } = useParams();
 
+    useEffect(() => {
+        setLoading(true);
+        dataProduct()
+            .then(res => setProducts(res.data))
+            .catch(console.error)
+            .finally(() => setLoading(false));
+    }, []);
+
     // Hàm lọc theo giá
-    const filterByPrice = (product) => {
-        const price = parseFloat(product.price.replace(/[^\d.]/g, ''));
-
+    const filterByPrice = useCallback((product) => {
+        const price = parseFloat(product.price.replace(/[^\\d.]/g, ''));
         switch (priceFilter) {
-            case "under-100":
-                return price < 100;
-            case "100-500":
-                return price >= 100 && price <= 500;
-            case "500-1000":
-                return price > 500 && price <= 1000;
-            case "over-1000":
-                return price > 1000;
-            default:
-                return true;
+            case "under-100": return price < 100;
+            case "100-500": return price >= 100 && price <= 500;
+            case "500-1000": return price > 500 && price <= 1000;
+            case "over-1000": return price > 1000;
+            default: return true;
         }
-    };
+    }, [priceFilter]);
 
-    const filteredSearch = keyword ? products.filter(product =>
-        product.name.toLowerCase().includes(keyword.toLowerCase()) && filterByPrice(product)
-    ) : products.filter(filterByPrice);
+    // Lọc sản phẩm theo từ khóa và giá
+    const filteredSearch = useMemo(() => (
+        keyword
+            ? products.filter(product => product.name.toLowerCase().includes(keyword.toLowerCase()) && filterByPrice(product))
+            : products.filter(filterByPrice)
+    ), [products, keyword, filterByPrice]);
 
-    const indexOfLastProduct = currentPage * productsPerPage;
-    const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-    const currentProducts = filteredSearch.slice(indexOfFirstProduct, indexOfLastProduct);
-    const totalPages = Math.ceil(filteredSearch.length / productsPerPage);
+    // Phân trang
+    const totalPages = useMemo(() => Math.ceil(filteredSearch.length / productsPerPage), [filteredSearch, productsPerPage]);
+    const currentProducts = useMemo(() => (
+        filteredSearch.slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage)
+    ), [filteredSearch, currentPage, productsPerPage]);
 
-    const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
+    // Các hàm phân trang
+    const handlePageChange = useCallback((pageNumber) => setCurrentPage(pageNumber), []);
+    const handlePrevPage = useCallback(() => setCurrentPage(p => Math.max(1, p - 1)), []);
+    const handleNextPage = useCallback(() => setCurrentPage(p => Math.min(totalPages, p + 1)), [totalPages]);
 
-    const handlePrevPage = () => {
-        if (currentPage > 1) setCurrentPage(currentPage - 1);
-    };
-
-    const handleNextPage = () => {
-        if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+    // Reset trang khi đổi filter
+    const handleFilterChange = (value) => {
+        setPriceFilter(value);
+        setCurrentPage(1);
+        setShowFilters(false);
     };
 
     return (
@@ -86,78 +78,34 @@ export default function Search() {
                 <div className={`lg:block ${showFilters ? 'block' : 'hidden'} mb-6 lg:mb-8 w-full lg:w-[20%]`}>
                     <h2 className="text-[20px] sm:text-[22px] lg:text-[24px] font-semibold mb-4 text-[#1a1337]">Sắp xếp theo giá</h2>
                     <ul className="border border-gray-200 shadow-sm rounded-lg overflow-hidden">
-                        <li>
-                            <label className={`px-3 sm:px-4 py-2 border-b border-gray-200 flex items-center gap-2 cursor-pointer ${priceFilter === "all" ? "bg-gray-100" : ""}`}>
-                                <input
-                                    type="radio"
-                                    name="priceFilter"
-                                    value="all"
-                                    checked={priceFilter === "all"}
-                                    onChange={() => { setPriceFilter("all"); setCurrentPage(1); setShowFilters(false); }}
-                                    className="accent-gray-500 w-4 h-4"
-                                />
-                                <span className="text-sm sm:text-base">Tất cả</span>
-                            </label>
-                        </li>
-                        <li>
-                            <label className={`px-3 sm:px-4 py-2 border-b border-gray-200 flex items-center gap-2 cursor-pointer ${priceFilter === "under-100" ? "bg-gray-100" : ""}`}>
-                                <input
-                                    type="radio"
-                                    name="priceFilter"
-                                    value="under-100"
-                                    checked={priceFilter === "under-100"}
-                                    onChange={() => { setPriceFilter("under-100"); setCurrentPage(1); setShowFilters(false); }}
-                                    className="accent-gray-500 w-4 h-4"
-                                />
-                                <span className="text-sm sm:text-base">Dưới 100$</span>
-                            </label>
-                        </li>
-                        <li>
-                            <label className={`px-3 sm:px-4 py-2 border-b border-gray-200 flex items-center gap-2 cursor-pointer ${priceFilter === "100-500" ? "bg-gray-100" : ""}`}>
-                                <input
-                                    type="radio"
-                                    name="priceFilter"
-                                    value="100-500"
-                                    checked={priceFilter === "100-500"}
-                                    onChange={() => { setPriceFilter("100-500"); setCurrentPage(1); setShowFilters(false); }}
-                                    className="accent-gray-500 w-4 h-4"
-                                />
-                                <span className="text-sm sm:text-base">100$ - 500$</span>
-                            </label>
-                        </li>
-                        <li>
-                            <label className={`px-3 sm:px-4 py-2 border-b border-gray-200 flex items-center gap-2 cursor-pointer ${priceFilter === "500-1000" ? "bg-gray-100" : ""}`}>
-                                <input
-                                    type="radio"
-                                    name="priceFilter"
-                                    value="500-1000"
-                                    checked={priceFilter === "500-1000"}
-                                    onChange={() => { setPriceFilter("500-1000"); setCurrentPage(1); setShowFilters(false); }}
-                                    className="accent-gray-500 w-4 h-4"
-                                />
-                                <span className="text-sm sm:text-base">500$ - 1000$</span>
-                            </label>
-                        </li>
-                        <li>
-                            <label className={`px-3 sm:px-4 py-2 border-b border-gray-200 flex items-center gap-2 cursor-pointer ${priceFilter === "over-1000" ? "bg-gray-100" : ""}`}>
-                                <input
-                                    type="radio"
-                                    name="priceFilter"
-                                    value="over-1000"
-                                    checked={priceFilter === "over-1000"}
-                                    onChange={() => { setPriceFilter("over-1000"); setCurrentPage(1); setShowFilters(false); }}
-                                    className="accent-gray-500 w-4 h-4"
-                                />
-                                <span className="text-sm sm:text-base">Trên 1000$</span>
-                            </label>
-                        </li>
+                        {[
+                            { value: "all", label: "Tất cả" },
+                            { value: "under-100", label: "Dưới 100$" },
+                            { value: "100-500", label: "100$ - 500$" },
+                            { value: "500-1000", label: "500$ - 1000$" },
+                            { value: "over-1000", label: "Trên 1000$" },
+                        ].map(opt => (
+                            <li key={opt.value}>
+                                <label className={`px-3 sm:px-4 py-2 border-b border-gray-200 flex items-center gap-2 cursor-pointer ${priceFilter === opt.value ? "bg-gray-100" : ""}`}>
+                                    <input
+                                        type="radio"
+                                        name="priceFilter"
+                                        value={opt.value}
+                                        checked={priceFilter === opt.value}
+                                        onChange={() => handleFilterChange(opt.value)}
+                                        className="accent-gray-500 w-4 h-4"
+                                    />
+                                    <span className="text-sm sm:text-base">{opt.label}</span>
+                                </label>
+                            </li>
+                        ))}
                     </ul>
                 </div>
 
                 <div className="w-full lg:w-[80%]">
                     {loading ? (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-x-5 lg:gap-y-20">
-                            {[...Array(6)].map((_, index) => (
+                            {[...Array(productsPerPage)].map((_, index) => (
                                 <ProductCardSkeleton key={index} />
                             ))}
                         </div>
