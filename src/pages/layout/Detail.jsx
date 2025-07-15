@@ -61,8 +61,8 @@ export default function Detail({ data: productDetail }) {
   if (!productDetail) return null;
 
   return (
-    <div className="relative z-10 mx-auto p-10">
-      <div className='py-5'>
+    <div className="relative z-10 mx-auto">
+      <div>
         <div className="flex flex-col lg:flex-row gap-6 sm:gap-8 lg:gap-10 items-start">
           <div className="flex-1 min-w-0 lg:min-w-[320px] w-full">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4 sm:mb-6">

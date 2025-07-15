@@ -80,13 +80,20 @@ export default function Product({ data: product }) {
                 />
 
                 <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-                    <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                    <div className="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
                         <DialogPanel
                             transition
-                            className="sm:max-w-[80%] relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all 
+                            className="sm:max-w-[80%] p-10 md:py-15 relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all 
                             data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out 
-                            data-leave:duration-200 data-leave:ease-in sm:my-8 data-closed:sm:translate-y-0 data-closed:sm:scale-95"
-                        >
+                            data-leave:duration-200 data-leave:ease-in sm:my-8 data-closed:sm:translate-y-0 data-closed:sm:scale-95">
+                            <button
+                                onClick={() => setOpen(false)}
+                                className="absolute cursor-pointer top-1 right-1 p-2 text-gray-400 hover:text-gray-700 text-2xl font-bold focus:outline-none"
+                                aria-label="Đóng">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                                </svg>
+                            </button>
                             <div className="bg-white">
                                 <Detail key={product.id} data={product} />
                             </div>
